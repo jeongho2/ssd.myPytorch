@@ -14,7 +14,8 @@ import torch.nn.init as init
 import torch.utils.data as data
 import numpy as np
 import argparse
-
+import warnings
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
@@ -23,15 +24,17 @@ def str2bool(v):
 parser = argparse.ArgumentParser(
     description='Single Shot MultiBox Detector Training With Pytorch')
 train_set = parser.add_mutually_exclusive_group()
-parser.add_argument('--dataset', default='VOC', choices=['VOC', 'COCO', 'RACCOON'],
+# parser.add_argument('--dataset', default='COCO', choices=['VOC', 'COCO', 'RACCOON'],
+parser.add_argument('--dataset', default='RACCOON', choices=['VOC', 'COCO', 'RACCOON'],
                     type=str, help='VOC or COCO or RACCOON')
-# parser.add_argument('--dataset_root', default=COCO_RACCOON_ROOT,
-print(COCO_ROOT)
-parser.add_argument('--dataset_root', default=COCO_ROOT,
+# print(COCO_ROOT)
+# parser.add_argument('--dataset_root', default=COCO_ROOT,
+parser.add_argument('--dataset_root', default=COCO_RACCOON_ROOT,
                     help='Dataset root directory path')
 parser.add_argument('--basenet', default='vgg16_reducedfc.pth',
                     help='Pretrained base model')
 # parser.add_argument('--batch_size', default=32, type=int,
+# parser.add_argument('--batch_size', default=4, type=int,
 parser.add_argument('--batch_size', default=16, type=int,
                     help='Batch size for training')
 parser.add_argument('--resume', default=None, type=str,
@@ -92,8 +95,6 @@ def train():
                                                          MEANS))
 
     elif args.dataset == 'RACCOON':
-        if args.dataset_root == COCO_RACCOON_ROOT:
-            parser.error('Must specify dataset if specifying dataset_root')
         cfg = raccoon
         dataset = COCORaccoonDetection(root=args.dataset_root,
                                transform=SSDAugmentation(cfg['min_dim'],

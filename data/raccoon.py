@@ -12,11 +12,11 @@ import torchvision.transforms as transforms
 import cv2
 import numpy as np
 
-COCO_RACCOON_ROOT = osp.join(HOME, 'Desktop/Dataset/COCO_Raccoon')
+COCO_RACCOON_ROOT = osp.join(HOME, 'data/coco_raccoon')
 IMAGES = 'images'
 ANNOTATIONS = 'annotations'
 COCO_RACCOON_API = 'PythonAPI'
-INSTANCES_SET = 'instances_{}.json'
+INSTANCES_SET = '{}.coco.json'
 COCO_RACCOON_CLASSES = ( # always index 0
     'raccoon')
 
@@ -73,16 +73,11 @@ class COCORaccoonDetection(data.Dataset):
         in the target (bbox) and transforms it.
     """
 
-    def __init__(self, root, image_set='trainval', transform=None,
+    def __init__(self, root, image_set='train', transform=None,
                  target_transform=COCORaccoonAnnotationTransform(), dataset_name='Roboflow COCO Raccon'):
         sys.path.append(osp.join(root, COCO_RACCOON_API))
         from pycocotools.coco import COCO
         self.root = osp.join(root, IMAGES, image_set)
-        print('@@@@@@@@@@@@@@@@')
-        print(self.root)
-        print(ANNOTATIONS)
-        print(INSTANCES_SET)
-        print('@@@@@@@@@@@@@@@@')
         self.coco = COCO(osp.join(root, ANNOTATIONS,
                                   INSTANCES_SET.format(image_set)))
         self.ids = list(self.coco.imgToAnns.keys())
